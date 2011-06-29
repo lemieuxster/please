@@ -9,11 +9,11 @@ Usage
 
 Use please to manage aliases in terminal so that
 
-tail -f /Users/username/Library/Preferences/Macromedia/Flash\ Player/Logs/flashlog.txt
+    tail -f /Users/username/Library/Preferences/Macromedia/Flash\ Player/Logs/flashlog.txt
 
 becomes
 
-please tail flash log
+    please tail flash log
 
 SO MUCH EASIER.
 
@@ -39,7 +39,8 @@ Installation
 ------------
 
 I could make this a "gem" or "something" but for now...
-sudo cp please.rb /usr/local/bin/please && sudo chmod 755 /usr/local/bin/please
+
+    sudo cp please.rb /usr/local/bin/please && sudo chmod 755 /usr/local/bin/please
 
 USE THIS AT YOUR OWN RISK.
 
