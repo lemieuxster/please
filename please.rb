@@ -1,16 +1,24 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
-yamlfile = "/usr/local/please/please.yml"
+yamldir = "/usr/local/.please"
+yamlfile = yamldir + "/please.yml"
 
 if ARGV.length == 0
   puts "please specify an alias or add a new one"
   Process.exit
 end
 
+#ensure files presence
+begin
+  if !FileTest::directory?(yamldir)
+    Dir::mkdir(yamldir)
+  end
+end
+
 #load file
 begin
-  aliasmap = YAML.load_file '/usr/local/please/please.yml'
+  aliasmap = YAML.load_file yamlfile
 rescue
   aliasmap = {}
 end
