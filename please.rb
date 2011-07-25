@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
-yamldir = "/usr/local/.please"
+yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/.please"
 yamlfile = yamldir + "/please.yml"
 
 if ARGV.length == 0
