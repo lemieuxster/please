@@ -86,8 +86,12 @@ begin
   end
   #puts aliname
   ali = aliasmap[aliname]
-  alicmd = ali["dir"] + ali["command"]
+  if (ali["dir"] && ali["dir"] != "")
+    Dir.chdir(ali["dir"])
+  end
+  alicmd = ali["command"]
   exec( alicmd )
-rescue
+rescue StandardError => error
   puts "could not execute alias"
+  puts error
 end
