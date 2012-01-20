@@ -105,9 +105,17 @@ begin
   end
 
   alicmd = ali["command"]
-#  puts alicmd
+#  puts "Command to run #{alicmd}"
 
   #TODO loop over "tokens" in alicmd and ask for inputs
+  inputs = alicmd.scan(/\{([^\}]+)\}/)
+  inputs.each_with_index {|e, i|
+    printf "#{e}: "
+    input = $stdin.gets.chomp
+    alicmd = alicmd.gsub(/\{#{e}\}/, input)
+  }
+
+#  puts "Final command #{alicmd}"
 
   exec( alicmd )
 
