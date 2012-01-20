@@ -44,4 +44,23 @@ I could make this a "gem" or "something" but for now...
 
 USE THIS AT YOUR OWN RISK.
 
-HUZZAH!                cd ~
+HUZZAH!
+
+
+Secret Hints
+------------
+
+When creating a new alias that requires arguments, you can use this syntax:
+please --add "my new alias" "echo {one} {two} {three} {four}"
+
+As this alias is executed, you will be propted by stdin to provide values for each variable, like so
+one: Uno
+two: Dos
+three: Tres
+four: Cuatro
+
+And the output would like like this
+Uno Dos Tres Cuatro
+
+Because the command that was run was echo Uno Dos Tres Cuatro.
+
