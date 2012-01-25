@@ -109,16 +109,17 @@ begin
 
   #TODO loop over "tokens" in alicmd and ask for inputs
   inputs = alicmd.scan(/\{([^\}]+)\}/)
-  inputs.each_with_index {|e, i|
-    printf "#{e}: "
+  inputs.each{|e|
+    printf "#{e[0]}: "
     input = $stdin.gets.chomp
-    alicmd = alicmd.gsub(/\{#{e}\}/, input)
+    alicmd = alicmd.gsub(/\{#{e[0]}\}/, input)
   }
 
-#  puts "Final command #{alicmd}"
+  #puts "Final command #{alicmd}"
 
   exec( alicmd )
 
 rescue StandardError => error
   puts "Error executing alias."
+  puts error
 end
