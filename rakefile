@@ -1,0 +1,7 @@
+require 'fileutils'
+
+task :bin do |t|
+  unless !FileTest::exists?("please.rb")
+    FileUtils.cp("please.rb", "bin/please")
+  end
+end
