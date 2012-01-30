@@ -3,7 +3,7 @@ Gem::Specification.new do |s|
   s.version                  = '0.0.0'
   s.platform                 = Gem::Platform::CURRENT
   s.bindir                   = 'bin'
-  s.executables              = ["please.rb"]
+  s.executables              = ["please"]
   s.summary                  = "A polite alias manager."
   s.description              = "Use please to manage complex aliases and other repeatedely used terminal commands. please can normal aliases or aliases with arguments."
   s.authors                  = ["David LeMieux"]

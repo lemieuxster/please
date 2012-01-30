@@ -5,3 +5,7 @@ task :bin do |t|
     FileUtils.cp("please.rb", "bin/please")
   end
 end
+
+task :gem => [:bin] do |t|
+  `gem build please.gemspec`
+end
