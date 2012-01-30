@@ -1,5 +1,5 @@
 Gem::Specification.new do |s|
-  s.name                     = 'please'
+  s.name                     = 'please-command-alias-manager'
   s.version                  = '0.0.0'
   s.platform                 = Gem::Platform::CURRENT
   s.bindir                   = 'bin'
