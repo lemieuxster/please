@@ -36,7 +36,7 @@ end
 
 if (arguments[0] === '--help')
   puts "\n"
-  puts "Please (v0.0.2) - an alias manager by David LeMieux\n\n"
+  puts "Please (v0.0.2beta) - an alias manager by David LeMieux\n\n"
   puts "Commands:\n"
   puts "       --add 'new alias' 'aliased command' 'working dir'(optional)\n"
   puts "       --del 'new alias'"
@@ -84,15 +84,27 @@ end
 
 begin
   aliname = ""
+  param_map = {}
+  ignore_next = false
+  name_count = 0;
 
   arguments.each_with_index do|arg, index|
-    aliname << arg
-    if (index < arguments.length - 1)
-      aliname << " "
+    if arg.start_with? '-'
+      param_map[arg.gsub(/\-/, '')] = arguments[index + 1]
+      ignore_next = true
+    elsif !ignore_next
+      if name_count > 0
+        aliname << " "
+      end
+      aliname << arg
+      name_count += 1
+    else
+      ignore_next = false
     end
   end
 
-#  puts aliname
+  puts aliname
+  puts param_map
   ali = aliasmap[aliname]
 
   if (ali == nil)
@@ -110,8 +122,12 @@ begin
   #TODO loop over "tokens" in alicmd and ask for inputs
   inputs = alicmd.scan(/\{([^\}]+)\}/)
   inputs.each{|e|
-    printf "#{e[0]}: "
-    input = $stdin.gets.chomp
+    if param_map[e[0]] != nil
+      input = param_map[e[0]]
+    else
+      printf "#{e[0]}: "
+      input = $stdin.gets.chomp
+    end
     alicmd = alicmd.gsub(/\{#{e[0]}\}/, input)
   }
 
