@@ -103,8 +103,8 @@ begin
     end
   end
 
-  puts aliname
-  puts param_map
+  #puts aliname
+  #puts param_map
   ali = aliasmap[aliname]
 
   if (ali == nil)
