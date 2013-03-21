@@ -36,7 +36,7 @@ end
 
 if (arguments[0] === '--help')
   puts "\n"
-  puts "Please (v0.0.3beta) - an alias manager by David LeMieux\n\n"
+  puts "Please (v0.0.2) - an alias manager by David LeMieux\n\n"
   puts "Commands:\n"
   puts "       --add 'new alias' 'aliased command' 'working dir'(optional)\n"
   puts "       --del 'new alias'"
