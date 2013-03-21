@@ -6,6 +6,12 @@ task :bin do |t|
   end
 end
 
+desc 'Build the gem'
 task :gem => [:bin] do |t|
   `gem build please.gemspec`
+end
+
+desc 'Build the gem and install it'
+task :install => 'gem' do |t|
+  `gem install please-0.0.2.gem`
 end
