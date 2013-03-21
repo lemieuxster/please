@@ -36,7 +36,7 @@ end
 
 if (arguments[0] === '--help')
   puts "\n"
-  puts "Please (v0.0.2beta) - an alias manager by David LeMieux\n\n"
+  puts "Please (v0.0.3beta) - an alias manager by David LeMieux\n\n"
   puts "Commands:\n"
   puts "       --add 'new alias' 'aliased command' 'working dir'(optional)\n"
   puts "       --del 'new alias'"
@@ -132,9 +132,9 @@ begin
   }
 
   #puts "Final command #{alicmd}"
-
-  exec( alicmd )
-rescue Interrupt => interupt
+  pex = system( alicmd )
+  puts "\nAborted" unless pex
+rescue Interrupt => interrupt
   puts "\nAborted"
 rescue StandardError => error
   puts "\nError executing alias."
