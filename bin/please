@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
-yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/.please"
+yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/please"
 yamlfile = yamldir + "/please.yml"
 
 if ARGV.length == 0
@@ -11,9 +11,7 @@ end
 
 #ensure files presence
 begin
-  if !FileTest::directory?(yamldir)
-    Dir::mkdir(yamldir)
-  end
+  Dir::mkdir(yamldir) unless FileTest::directory?(yamldir)
 end
 
 #load file
@@ -22,10 +20,7 @@ begin
 rescue
   aliasmap = {}
 end
-
-if (!aliasmap)
-  aliasmap = {}
-end
+aliasmap = {} unless aliasmap
 
 #collect arguments
 arguments = []
@@ -34,25 +29,30 @@ ARGV.each do|a|
   #puts arguments[arguments.length - 1];
 end
 
-if (arguments[0] === '--help')
+if arguments[0] === '--help'
   puts "\n"
   puts "Please (v0.0.2) - an alias manager by David LeMieux\n\n"
   puts "Commands:\n"
   puts "       --add 'new alias' 'aliased command' 'working dir'(optional)\n"
   puts "       --del 'new alias'"
-  puts "       --list to see list of aliases\n"
+  puts "       --list ('filter') to see list of aliases\n"
   puts "\n"
   puts "You can store your please aliases in a custom directory by exporting PLEASEDIR\n"
   puts "\n"
   Process.exit
-elsif (arguments[0] === '--list')
+elsif arguments[0] === '--list'
   aliasmap = aliasmap.sort {|a,b| a[0]<=>b[0]}
+
+  if arguments[1] != nil
+    aliasmap = aliasmap.select {|k, v| k.match arguments[1] }
+  end
+
   aliasmap.each {|key, value|
     puts ">" + key.rjust(30) + " = " + value["command"]
   }
   Process.exit
-elsif (arguments[0] === '--add')
-  if (!arguments[1] || !arguments[2])
+elsif arguments[0] === '--add'
+  if arguments[1] == nil || arguments[2] == nil
     puts "Not enough arguments."
     Process.exit
   end
@@ -66,8 +66,8 @@ elsif (arguments[0] === '--add')
   end
 
   Process.exit
-elsif (arguments[0] === '--del')
-  if (!arguments[1])
+elsif arguments[0] === '--del'
+  if arguments[1] === nil
     puts "Not enough arguments."
     Process.exit
   end
@@ -86,7 +86,7 @@ begin
   aliname = ""
   param_map = {}
   ignore_next = false
-  name_count = 0;
+  name_count = 0
 
   arguments.each_with_index do|arg, index|
     if arg.start_with? '-'
@@ -107,19 +107,26 @@ begin
   #puts param_map
   ali = aliasmap[aliname]
 
-  if (ali == nil)
+  if ali == nil
     puts "No alias found."
     Process.exit
   end
 
-  if (ali["dir"] && ali["dir"] != "")
-    Dir.chdir(ali["dir"])
+  if ali["dir"] && ali["dir"] != ""
+    dirstr = ali["dir"]
+    dirs = dirstr.scan(/\$([^\s]+)/)
+    dirs.each{|e|
+      if ENV[e[0]] != nil
+        dirstr = dirstr.gsub(/\$#{e[0]}/, ENV[e[0]])
+      end
+    }
+    Dir.chdir(dirstr)
   end
 
   alicmd = ali["command"]
 #  puts "Command to run #{alicmd}"
 
-  #TODO loop over "tokens" in alicmd and ask for inputs
+  #loop over "tokens" in alicmd and ask for inputs
   inputs = alicmd.scan(/\{([^\}]+)\}/)
   inputs.each{|e|
     if param_map[e[0]] != nil
