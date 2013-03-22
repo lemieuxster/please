@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
-yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/.please"
+yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/please"
 yamlfile = yamldir + "/please.yml"
 
 if ARGV.length == 0
@@ -11,9 +11,7 @@ end
 
 #ensure files presence
 begin
-  if !FileTest::directory?(yamldir)
-    Dir::mkdir(yamldir)
-  end
+  Dir::mkdir(yamldir) unless FileTest::directory?(yamldir)
 end
 
 #load file
@@ -22,10 +20,7 @@ begin
 rescue
   aliasmap = {}
 end
-
-if (!aliasmap)
-  aliasmap = {}
-end
+aliasmap = {} unless aliasmap
 
 #collect arguments
 arguments = []
@@ -57,7 +52,7 @@ elsif arguments[0] === '--list'
   }
   Process.exit
 elsif arguments[0] === '--add'
-  if (!arguments[1] || !arguments[2])
+  if arguments[1] == nil || arguments[2] == nil
     puts "Not enough arguments."
     Process.exit
   end
@@ -91,7 +86,7 @@ begin
   aliname = ""
   param_map = {}
   ignore_next = false
-  name_count = 0;
+  name_count = 0
 
   arguments.each_with_index do|arg, index|
     if arg.start_with? '-'
@@ -112,12 +107,12 @@ begin
   #puts param_map
   ali = aliasmap[aliname]
 
-  if (ali == nil)
+  if ali == nil
     puts "No alias found."
     Process.exit
   end
 
-  if (ali["dir"] && ali["dir"] != "")
+  if ali["dir"] && ali["dir"] != ""
     dirstr = ali["dir"]
     dirs = dirstr.scan(/\$([^\s]+)/)
     dirs.each{|e|
@@ -131,7 +126,7 @@ begin
   alicmd = ali["command"]
 #  puts "Command to run #{alicmd}"
 
-  #TODO loop over "tokens" in alicmd and ask for inputs
+  #loop over "tokens" in alicmd and ask for inputs
   inputs = alicmd.scan(/\{([^\}]+)\}/)
   inputs.each{|e|
     if param_map[e[0]] != nil
