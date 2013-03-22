@@ -40,7 +40,7 @@ if arguments[0] === '--help'
   puts "Commands:\n"
   puts "       --add 'new alias' 'aliased command' 'working dir'(optional)\n"
   puts "       --del 'new alias'"
-  puts "       --list to see list of aliases\n"
+  puts "       --list ('filter') to see list of aliases\n"
   puts "\n"
   puts "You can store your please aliases in a custom directory by exporting PLEASEDIR\n"
   puts "\n"
