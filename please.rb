@@ -113,7 +113,14 @@ begin
   end
 
   if (ali["dir"] && ali["dir"] != "")
-    Dir.chdir(ali["dir"])
+    dirstr = ali["dir"]
+    dirs = dirstr.scan(/\$([^\s]+)/)
+    dirs.each{|e|
+      if ENV[e[0]] != nil
+        dirstr = dirstr.gsub(/\$#{e[0]}/, ENV[e[0]])
+      end
+    }
+    Dir.chdir(dirstr)
   end
 
   alicmd = ali["command"]
