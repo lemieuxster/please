@@ -34,7 +34,7 @@ ARGV.each do|a|
   #puts arguments[arguments.length - 1];
 end
 
-if (arguments[0] === '--help')
+if arguments[0] === '--help'
   puts "\n"
   puts "Please (v0.0.2) - an alias manager by David LeMieux\n\n"
   puts "Commands:\n"
@@ -45,13 +45,18 @@ if (arguments[0] === '--help')
   puts "You can store your please aliases in a custom directory by exporting PLEASEDIR\n"
   puts "\n"
   Process.exit
-elsif (arguments[0] === '--list')
+elsif arguments[0] === '--list'
   aliasmap = aliasmap.sort {|a,b| a[0]<=>b[0]}
+
+  if arguments[1] != nil
+    aliasmap = aliasmap.select {|k, v| k.match arguments[1] }
+  end
+
   aliasmap.each {|key, value|
     puts ">" + key.rjust(30) + " = " + value["command"]
   }
   Process.exit
-elsif (arguments[0] === '--add')
+elsif arguments[0] === '--add'
   if (!arguments[1] || !arguments[2])
     puts "Not enough arguments."
     Process.exit
@@ -66,8 +71,8 @@ elsif (arguments[0] === '--add')
   end
 
   Process.exit
-elsif (arguments[0] === '--del')
-  if (!arguments[1])
+elsif arguments[0] === '--del'
+  if arguments[1] === nil
     puts "Not enough arguments."
     Process.exit
   end
