@@ -1,7 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'yaml'
-yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/please"
+require 'readline'
+
+yamldir = (ENV["PLEASEDIR"]) ? ENV["PLEASEDIR"] : "/usr/local/.please"
 yamlfile = yamldir + "/please.yml"
 
 if ARGV.length == 0
@@ -29,9 +31,22 @@ ARGV.each do|a|
   #puts arguments[arguments.length - 1];
 end
 
+
+def list(aliasmap, name = nil)
+  aliasmap = aliasmap.sort {|a,b| a[0]<=>b[0]}
+
+  if name != nil
+    aliasmap = aliasmap.select {|k, v| k.match name or v["command"].match name }
+  end
+
+  aliasmap.each {|key, value|
+    puts ">" + key.rjust(30) + " = " + value["command"]
+  }
+end
+
 if arguments[0] === '--help'
   puts "\n"
-  puts "Please (v0.0.2) - an alias manager by David LeMieux\n\n"
+  puts "Please (v0.0.3) - an alias manager by David LeMieux\n\n"
   puts "Commands:\n"
   puts "       --add 'new alias' 'aliased command' 'working dir'(optional)\n"
   puts "       --del 'new alias'"
@@ -41,15 +56,7 @@ if arguments[0] === '--help'
   puts "\n"
   Process.exit
 elsif arguments[0] === '--list'
-  aliasmap = aliasmap.sort {|a,b| a[0]<=>b[0]}
-
-  if arguments[1] != nil
-    aliasmap = aliasmap.select {|k, v| k.match arguments[1] }
-  end
-
-  aliasmap.each {|key, value|
-    puts ">" + key.rjust(30) + " = " + value["command"]
-  }
+  list aliasmap, arguments[1]
   Process.exit
 elsif arguments[0] === '--add'
   if arguments[1] == nil || arguments[2] == nil
@@ -109,6 +116,7 @@ begin
 
   if ali == nil
     puts "No alias found."
+    list aliasmap, aliname
     Process.exit
   end
 
@@ -132,8 +140,8 @@ begin
     if param_map[e[0]] != nil
       input = param_map[e[0]]
     else
-      printf "#{e[0]}: "
-      input = $stdin.gets.chomp
+      Readline.completion_append_character = ""
+      input = Readline.readline("#{e[0]}: ", true)
     end
     alicmd = alicmd.gsub(/\{#{e[0]}\}/, input)
   }
