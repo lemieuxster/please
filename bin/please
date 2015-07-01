@@ -91,14 +91,24 @@ end
 
 begin
   aliname = ""
-  param_map = {}
   ignore_next = false
   name_count = 0
 
+  aliases = []
+  params = []
+
   arguments.each_with_index do|arg, index|
     if arg.start_with? '-'
-      param_map[arg.gsub(/\-/, '')] = arguments[index + 1]
+      if params[aliases.length] == nil
+        params[aliases.length] = {}
+      end
+      params[aliases.length][arg.gsub(/\-/, '')] = arguments[index + 1]
       ignore_next = true
+    elsif arg == "then" && name_count > 0
+      aliases.push(aliname)
+      aliname = ""
+      name_count = 0
+      puts aliases
     elsif !ignore_next
       if name_count > 0
         aliname << " "
@@ -110,45 +120,51 @@ begin
     end
   end
 
-  #puts aliname
-  #puts param_map
-  ali = aliasmap[aliname]
+  aliases.push(aliname)
 
-  if ali == nil
-    puts "No alias found."
-    list aliasmap, aliname
-    Process.exit
-  end
+  aliases.each_with_index {|aliname, index|
 
-  if ali["dir"] && ali["dir"] != ""
-    dirstr = ali["dir"]
-    dirs = dirstr.scan(/\$([^\s]+)/)
-    dirs.each{|e|
-      if ENV[e[0]] != nil
-        dirstr = dirstr.gsub(/\$#{e[0]}/, ENV[e[0]])
-      end
-    }
-    Dir.chdir(dirstr)
-  end
+    #puts aliname
+    #puts index
+    ali = aliasmap[aliname]
+    param_map = params[index] || {}
 
-  alicmd = ali["command"]
-#  puts "Command to run #{alicmd}"
-
-  #loop over "tokens" in alicmd and ask for inputs
-  inputs = alicmd.scan(/\{([^\}]+)\}/)
-  inputs.each{|e|
-    if param_map[e[0]] != nil
-      input = param_map[e[0]]
-    else
-      Readline.completion_append_character = ""
-      input = Readline.readline("#{e[0]}: ", true)
+    if ali == nil
+      puts "No alias found."
+      list aliasmap, aliname
+      Process.exit
     end
-    alicmd = alicmd.gsub(/\{#{e[0]}\}/, input)
-  }
 
-  #puts "Final command #{alicmd}"
-  pex = system( alicmd )
-  puts "\nAborted" unless pex
+    if ali["dir"] && ali["dir"] != ""
+      dirstr = ali["dir"]
+      dirs = dirstr.scan(/\$([^\s]+)/)
+      dirs.each{|e|
+        if ENV[e[0]] != nil
+          dirstr = dirstr.gsub(/\$#{e[0]}/, ENV[e[0]])
+        end
+      }
+      Dir.chdir(dirstr)
+    end
+
+    alicmd = ali["command"]
+    #puts "Command to run #{alicmd}"
+
+    #loop over "tokens" in alicmd and ask for inputs
+    inputs = alicmd.scan(/\{([^\}]+)\}/)
+    inputs.each{|e|
+      if param_map[e[0]] != nil
+        input = param_map[e[0]]
+      else
+        Readline.completion_append_character = ""
+        input = Readline.readline("#{e[0]}: ", true)
+      end
+      alicmd = alicmd.gsub(/\{#{e[0]}\}/, input)
+    }
+
+    #puts "Final command #{alicmd}"
+    pex = system( alicmd )
+    puts "\nAborted" unless pex
+  }
 rescue Interrupt => interrupt
   puts "\nAborted"
 rescue StandardError => error
