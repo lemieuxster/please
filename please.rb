@@ -108,7 +108,6 @@ begin
       aliases.push(aliname)
       aliname = ""
       name_count = 0
-      puts aliases
     elsif !ignore_next
       if name_count > 0
         aliname << " "
