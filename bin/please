@@ -164,6 +164,7 @@ begin
     #puts "Final command #{alicmd}"
     pex = system( alicmd )
     puts "\nAborted" unless pex
+    Process.exit unless pex
   }
 rescue Interrupt => interrupt
   puts "\nAborted"
